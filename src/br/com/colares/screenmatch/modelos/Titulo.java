@@ -1,19 +1,15 @@
 package br.com.colares.screenmatch.modelos;
 
+import br.com.colares.screenmatch.excecao.ErroDeConversaoDeAnoException;
 import com.google.gson.annotations.SerializedName;
 
 public class Titulo implements Comparable<Titulo> {
 
-    @SerializedName("Title")
     private String nome;
-
-    @SerializedName("Year")
     private int anoDeLancamento;
-
     private boolean incluidoNoPlano;
     private double somaDasAvaliacoes;
     private int totalDeAvaliacoes;
-
     private int duracaoEmMinutos;
 
     public Titulo(String nome, int anoDeLancamento) {
@@ -23,6 +19,11 @@ public class Titulo implements Comparable<Titulo> {
 
     public Titulo(TituloOmdb meuTituloOmdb) {
         this.setNome(meuTituloOmdb.title());
+
+        if(meuTituloOmdb.year().length() > 4) {
+            throw new ErroDeConversaoDeAnoException("Não consegui converter o ano" +
+                    " porque tem mais de 04 caracteres");
+        }
         this.setAnoDeLancamento(Integer.parseInt(meuTituloOmdb.year()));
         this.setDuracaoEmMinutos(Integer.parseInt(meuTituloOmdb.runtime().substring(0, 2)));
     }
@@ -84,8 +85,8 @@ public class Titulo implements Comparable<Titulo> {
 
     @Override
     public String toString() {
-        return "nome='" + nome + '\'' +
-                ", anoDeLancamento=" + anoDeLancamento +
-                ", duracação= " + duracaoEmMinutos;
+        return "(nome= " + nome +
+                ", anoDeLancamento= " + anoDeLancamento +
+                ", duracação= " + duracaoEmMinutos + ")";
     }
 }
